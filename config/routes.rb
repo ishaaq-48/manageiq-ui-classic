@@ -685,6 +685,8 @@ Rails.application.routes.draw do
         protect
         console
         kube_exec_console
+        logs
+        logs_page
       ],
       :post => %w[
         button

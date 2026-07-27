@@ -19,6 +19,11 @@ class ContainerGroupController < ApplicationController
         :action => "console",
         :id     => params[:id]
       )
+    when "container_group_logs"
+      javascript_redirect(
+        :action => "logs_page",
+        :id     => params[:id]
+      )
     else
       super
     end
@@ -30,6 +35,24 @@ class ContainerGroupController < ApplicationController
       :name => _("Container Group Console"),
       :url  => "/container_group/console/#{@record.id}"
     )
+  end
+
+  def logs_page
+    @record = identify_record(params[:id], ContainerGroup)
+    drop_breadcrumb(
+      :name => _("Logs"),
+      :url  => "/container_group/logs_page/#{@record.id}"
+    )
+  end
+
+
+  def logs
+    container_group = ContainerGroup.find(params[:id])
+    container_name  = params[:container]
+
+    render :json => { :logs => container_group.logs(container_name) }
+  rescue StandardError => e
+    render :json => { :error => e.message }, :status => :bad_gateway
   end
 
   private
